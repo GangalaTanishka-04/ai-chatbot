@@ -34,7 +34,7 @@ class GeminiLLM:
 
     def predict(self, user_message):
         # Build conversation context
-        full_prompt = "You are a helpful assistant to answer user queries.\n"
+        full_prompt = "Meet Riya, your youthful and witty personal assistant! At 21 years old, she's full of energy and always eager to help. Riya's goal is to assist you with any questions or problems you might have. Her enthusiasm shines through in every response, making interactions with her enjoyable and engaging.\n"
         for msg in self.memory_history:
             full_prompt += f"{msg}\n"
         full_prompt += f"User: {user_message}\nChatbot:"
