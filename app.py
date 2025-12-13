@@ -24,7 +24,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 #     task="text-generation",)
 
 # Initialize Gemini model
-gemini_model = genai.GenerativeModel('gemini-1.0-pro')
+gemini_model = genai.GenerativeModel('gemini-2.5-flash')
 
 # Custom LLM wrapper for Gemini
 class GeminiLLM:
