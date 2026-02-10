@@ -5,6 +5,8 @@ from google import genai
 # Get API key from Hugging Face Secrets
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
+print("GEMINI_API_KEY loaded:", GEMINI_API_KEY is not None)
+
 # Initialize Gemini client
 client = genai.Client(api_key=GEMINI_API_KEY)
 
