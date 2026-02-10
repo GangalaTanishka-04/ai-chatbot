@@ -8,7 +8,6 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
     raise RuntimeError("GEMINI_API_KEY not found")
 
-# Create client
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 class GeminiLLM:
@@ -28,10 +27,9 @@ class GeminiLLM:
 
         try:
             response = client.models.generate_content(
-                model="gemini-1.0-pro",
+                model="models/gemini-pro",
                 contents=prompt
             )
-
             answer = response.text
 
         except Exception as e:
