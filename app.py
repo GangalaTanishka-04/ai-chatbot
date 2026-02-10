@@ -1,53 +1,58 @@
 import os
 import gradio as gr
-import google.generativeai as genai
+from google import genai
 
-# Configure Gemini using HF Secrets
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+# Get API key from Hugging Face Secrets
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
-# Stable model
-gemini_model = genai.GenerativeModel("gemini-1.5-flash")
+# Initialize Gemini client
+client = genai.Client(api_key=GEMINI_API_KEY)
 
+# Custom Gemini LLM wrapper
 class GeminiLLM:
-    def __init__(self, model):
-        self.model = model
+    def __init__(self):
         self.memory_history = []
 
     def predict(self, user_message):
-        full_prompt = (
+        # System prompt
+        prompt = (
             "Meet Riya, your youthful and witty personal assistant! "
-            "At 21 years old, she's energetic and eager to help.\n"
+            "She is energetic, friendly, and helpful.\n"
         )
 
-        for msg in self.memory_history:
-            full_prompt += f"{msg}\n"
+        # Add last few turns for context
+        for msg in self.memory_history[-6:]:
+            prompt += msg + "\n"
 
-        full_prompt += f"User: {user_message}\nChatbot:"
+        prompt += f"User: {user_message}\nChatbot:"
 
-        response = self.model.generate_content(full_prompt)
-        answer = response.text
+        try:
+            response = client.models.generate_content(
+                model="gemini-1.5-flash",
+                contents=prompt
+            )
+            answer = response.text
+        except Exception as e:
+            answer = "Sorry, something went wrong. Please try again."
 
+        # Update memory
         self.memory_history.append(f"User: {user_message}")
         self.memory_history.append(f"Chatbot: {answer}")
 
-        if len(self.memory_history) > 20:
-            self.memory_history = self.memory_history[-20:]
-
         return answer
 
-llm_chain = GeminiLLM(gemini_model)
 
-def get_text_response(message, history):
-    return llm_chain.predict(message)
+llm_chain = GeminiLLM()
+
+def get_text_response(user_message, history):
+    return llm_chain.predict(user_message)
+
 
 demo = gr.ChatInterface(
     get_text_response,
-    examples=[
-        "How are you doing?",
-        "What are your interests?",
-        "Which places do you like to visit?"
-    ]
+    examples=[],  # IMPORTANT: prevents startup crash
 )
 
 if __name__ == "__main__":
     demo.launch()
+
