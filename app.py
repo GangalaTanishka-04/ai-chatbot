@@ -1,37 +1,3 @@
-# import os
-# import gradio as gr
-# from google import genai
-
-# print("========== STARTING ==========")
-
-# API_KEY = os.getenv("GEMINI_API_KEY")
-# print("API exists:", API_KEY is not None)
-
-# client = genai.Client(api_key=API_KEY)
-
-# MODEL = "models/gemini-2.5-flash"
-
-# print("USING MODEL:", MODEL)
-
-# def chat(message, history):
-#     try:
-#         response = client.models.generate_content(
-#             model="models/gemini-3.5-flash",
-#             contents=message
-#         )
-
-#         print(response)
-#         return response.text
-
-#     except Exception as e:
-#         import traceback
-#         traceback.print_exc()
-#         return str(e)
-
-# demo = gr.ChatInterface(chat)
-
-# demo.launch()
-
 #rebuild
 import os
 import gradio as gr
@@ -61,7 +27,7 @@ class GeminiLLM:
 
         try:
             response = client.models.generate_content(
-                model="models/gemini-2.0-flash",
+                model="models/gemini-3.5-flash",
                 contents=prompt
             )
             answer = response.text
