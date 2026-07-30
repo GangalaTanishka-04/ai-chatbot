@@ -8,8 +8,6 @@ OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 if not OPENROUTER_API_KEY:
     raise RuntimeError("OPENROUTER_API_KEY not found")
 
-client = genai.Client(api_key=OPENROUTER_API_KEY)
-
 class ChatbotLLM:
     def __init__(self):
         self.memory = []
