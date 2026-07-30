@@ -27,13 +27,22 @@ class GeminiLLM:
 
         try:
             response = client.models.generate_content(
-                model="models/gemini-2.5-flash",
+                model="models/gemini-3.5-flash",
                 contents=prompt
             )
             answer = response.text
 
         except Exception as e:
-            answer = f"Gemini error: {str(e)}"
+            error = str(e)
+        
+            if "503" in error:
+                answer = "⚠️ Gemini is currently experiencing high demand. Please try again in a minute."
+        
+            elif "429" in error:
+                answer = "⚠️ API quota exceeded. Please try again later."
+        
+            else:
+                answer = f"Error: {error}"
 
         self.memory.append(f"User: {user_message}")
         self.memory.append(f"Chatbot: {answer}")
