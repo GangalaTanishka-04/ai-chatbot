@@ -1,16 +1,16 @@
 #rebuild
 import os
 import gradio as gr
-from google import genai
-
+import requests
 # Load API key
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-if not GEMINI_API_KEY:
-    raise RuntimeError("GEMINI_API_KEY not found")
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 
-client = genai.Client(api_key=GEMINI_API_KEY)
+if not OPENROUTER_API_KEY:
+    raise RuntimeError("OPENROUTER_API_KEY not found")
 
-class GeminiLLM:
+client = genai.Client(api_key=OPENROUTER_API_KEY)
+
+class ChatbotLLM:
     def __init__(self):
         self.memory = []
 
@@ -25,24 +25,39 @@ class GeminiLLM:
 
         prompt += f"User: {user_message}\nChatbot:"
 
+        headers = {
+            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "Content-Type": "application/json",
+        }
+        
+        payload = {
+            "model": "meta-llama/llama-3.1-8b-instruct:free",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "Meet Riya, your youthful and witty personal assistant. She is friendly, energetic and helpful."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        }
+        
         try:
-            response = client.models.generate_content(
-                model="models/gemini-3.5-flash",
-                contents=prompt
+            response = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=60
             )
-            answer = response.text
-
+        
+            response.raise_for_status()
+        
+            answer = response.json()["choices"][0]["message"]["content"]
+        
         except Exception as e:
-            error = str(e)
-        
-            if "503" in error:
-                answer = "⚠️ Gemini is currently experiencing high demand. Please try again in a minute."
-        
-            elif "429" in error:
-                answer = "⚠️ API quota exceeded. Please try again later."
-        
-            else:
-                answer = f"Error: {error}"
+            answer = f"Error: {e}"
 
         self.memory.append(f"User: {user_message}")
         self.memory.append(f"Chatbot: {answer}")
@@ -50,7 +65,7 @@ class GeminiLLM:
         return answer
 
 
-llm = GeminiLLM()
+llm = ChatbotLLM()
 
 def get_text_response(message, history):
     return llm.predict(message)
