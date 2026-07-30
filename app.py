@@ -1,12 +1,12 @@
-#rebuild
 import os
 import gradio as gr
 import requests
-# Load API key
+
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 
 if not OPENROUTER_API_KEY:
     raise RuntimeError("OPENROUTER_API_KEY not found")
+
 
 class ChatbotLLM:
     def __init__(self):
@@ -26,14 +26,16 @@ class ChatbotLLM:
         headers = {
             "Authorization": f"Bearer {OPENROUTER_API_KEY}",
             "Content-Type": "application/json",
+            "HTTP-Referer": "https://huggingface.co",
+            "X-Title": "Riya Chatbot"
         }
-        
+
         payload = {
-            "model": "meta-llama/llama-3.1-8b-instruct:free",
+            "model": "deepseek/deepseek-chat-v3-0324:free",
             "messages": [
                 {
                     "role": "system",
-                    "content": "Meet Riya, your youthful and witty personal assistant. She is friendly, energetic and helpful."
+                    "content": "You are Riya, a friendly, witty and helpful AI assistant."
                 },
                 {
                     "role": "user",
@@ -41,7 +43,7 @@ class ChatbotLLM:
                 }
             ]
         }
-        
+
         try:
             response = requests.post(
                 "https://openrouter.ai/api/v1/chat/completions",
@@ -49,13 +51,19 @@ class ChatbotLLM:
                 json=payload,
                 timeout=60
             )
-        
+
+            print("STATUS:", response.status_code)
+            print("BODY:", response.text)
+
             response.raise_for_status()
-        
+
             answer = response.json()["choices"][0]["message"]["content"]
-        
-        except Exception as e:
-            answer = f"Error: {e}"
+
+        except Exception:
+            if 'response' in locals():
+                answer = f"{response.status_code}\n{response.text}"
+            else:
+                answer = "Unknown Error"
 
         self.memory.append(f"User: {user_message}")
         self.memory.append(f"Chatbot: {answer}")
@@ -65,15 +73,15 @@ class ChatbotLLM:
 
 llm = ChatbotLLM()
 
+
 def get_text_response(message, history):
     return llm.predict(message)
 
 
 demo = gr.ChatInterface(
-    get_text_response,
-    examples=[],
+    fn=get_text_response,
+    examples=[]
 )
 
 if __name__ == "__main__":
     demo.launch()
-
