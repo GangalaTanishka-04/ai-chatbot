@@ -14,19 +14,18 @@ MODEL = "models/gemini-2.5-flash"
 print("USING MODEL:", MODEL)
 
 def chat(message, history):
-    print("Generating response...")
-
     try:
         response = client.models.generate_content(
-            model=MODEL,
+            model="models/gemini-2.5-flash",
             contents=message
         )
 
-        print("Success")
+        print(response)
         return response.text
 
     except Exception as e:
-        print("ERROR:", e)
+        import traceback
+        traceback.print_exc()
         return str(e)
 
 demo = gr.ChatInterface(chat)
