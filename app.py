@@ -31,7 +31,7 @@ class ChatbotLLM:
         }
 
         payload = {
-            "model": "deepseek/deepseek-chat-v3-0324:free",
+            "model": "google/gemma-4-26b-a4b-it:free",
             "messages": [
                 {
                     "role": "system",
