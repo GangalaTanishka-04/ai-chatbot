@@ -10,9 +10,6 @@ if not GEMINI_API_KEY:
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-for model in client.models.list():
-    print(model.name)
-
 class GeminiLLM:
     def __init__(self):
         self.memory = []
@@ -30,7 +27,7 @@ class GeminiLLM:
 
         try:
             response = client.models.generate_content(
-                model="gemini-2.5-flash",
+                model="gemini-2.5-flash-lite",
                 contents=prompt
             )
             answer = response.text
