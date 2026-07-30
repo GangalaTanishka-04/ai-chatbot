@@ -3,10 +3,10 @@ import os
 import gradio as gr
 from google import genai
 
-# # Load API key
-# GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-# if not GEMINI_API_KEY:
-#     raise RuntimeError("GEMINI_API_KEY not found")
+# Load API key
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    raise RuntimeError("GEMINI_API_KEY not found")
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
