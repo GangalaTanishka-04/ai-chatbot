@@ -35,16 +35,6 @@ ai-chatbot/
 │   └── chat.png
 ```
 
-## Screenshots
-
-### Home
-
-![Home](images/home.png)
-
-### Chat Example
-
-![Chat](images/chat.png)
-
 ## Installation
 
 Clone the repository
