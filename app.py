@@ -27,7 +27,7 @@ class GeminiLLM:
 
         try:
             response = client.models.generate_content(
-                model="models/gemini-pro",
+                model="gemini-2.5-flash",
                 contents=prompt
             )
             answer = response.text
