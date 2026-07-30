@@ -52,9 +52,6 @@ class ChatbotLLM:
                 timeout=60
             )
 
-            print("STATUS:", response.status_code)
-            print("BODY:", response.text)
-
             response.raise_for_status()
 
             answer = response.json()["choices"][0]["message"]["content"]
@@ -80,7 +77,13 @@ def get_text_response(message, history):
 
 demo = gr.ChatInterface(
     fn=get_text_response,
-    examples=[]
+    title="🤖 Riya AI Assistant",
+    description="A friendly conversational AI assistant powered by an open-source LLM.",
+    examples=[
+        "Tell me about yourself",
+        "Plan a Hyderabad trip",
+        "Write a Python function to reverse a linked list"
+    ]
 )
 
 if __name__ == "__main__":
